@@ -11,7 +11,7 @@ function createPreloader(list) {
     };
 }
 
-function runPreloadTask(prefetcher, imageCacheManager) {
+function runPreloadTask(prefetcher, imageCacheManager, onProgress) {
     const url = prefetcher.next();
     if (!url) {
         return Promise.resolve();
@@ -19,12 +19,15 @@ function runPreloadTask(prefetcher, imageCacheManager) {
     // console.log('START', url);
     return imageCacheManager.downloadAndCacheUrl(url)
         // allow prefetch task to fail without terminating other prefetch tasks
-        .catch(_.noop)
+        .catch(() => { onProgress(url, false)})
         // .then(() => {
         //     console.log('END', url);
         // })
         // then run next task
-        .then(() => runPreloadTask(prefetcher, imageCacheManager));
+        .then(() => {
+            onProgress(url, true)
+            runPreloadTask(prefetcher, imageCacheManager)
+        });
 }
 
 module.exports = {
@@ -34,13 +37,14 @@ module.exports = {
      * @param urls
      * @param imageCacheManager
      * @param numberOfConcurrentPreloads
+     * @param onProgress
      * @returns {Promise}
      */
-    preloadImages(urls, imageCacheManager, numberOfConcurrentPreloads) {
+    preloadImages(urls, imageCacheManager, numberOfConcurrentPreloads, onProgress) {
         const preloader = createPreloader(urls);
         const numberOfWorkers = numberOfConcurrentPreloads > 0 ? numberOfConcurrentPreloads : urls.length;
         const promises = _.times(numberOfWorkers, () =>
-            runPreloadTask(preloader, imageCacheManager)
+            runPreloadTask(preloader, imageCacheManager, onProgress)
         );
         return Promise.all(promises);
     },

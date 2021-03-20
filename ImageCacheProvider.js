@@ -24,12 +24,14 @@ class ImageCacheProvider extends React.Component {
         numberOfConcurrentPreloads: PropTypes.number.isRequired,
 
         onPreloadComplete: PropTypes.func.isRequired,
+        onProgress: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
         urlsToPreload: [],
         numberOfConcurrentPreloads: 0,
         onPreloadComplete: _.noop,
+        onProgress: _.noop,
     };
 
     static childContextTypes = {
@@ -54,11 +56,11 @@ class ImageCacheProvider extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.preloadImages(this.props.urlsToPreload);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(nextProps) {
         // reset imageCacheManager in case any option changed
         this.imageCacheManager = null;
         // preload new images if needed
@@ -81,7 +83,7 @@ class ImageCacheProvider extends React.Component {
 
     preloadImages(urlsToPreload) {
         const imageCacheManager = this.getImageCacheManager();
-        ImageCachePreloader.preloadImages(urlsToPreload, imageCacheManager, this.props.numberOfConcurrentPreloads)
+        ImageCachePreloader.preloadImages(urlsToPreload, imageCacheManager, this.props.numberOfConcurrentPreloads, this.props.onProgress)
             .then(() => this.props.onPreloadComplete());
     }
 
