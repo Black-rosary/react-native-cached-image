@@ -19,14 +19,11 @@ function runPreloadTask(prefetcher, imageCacheManager, onProgress) {
     // console.log('START', url);
     return imageCacheManager.downloadAndCacheUrl(url)
         // allow prefetch task to fail without terminating other prefetch tasks
-        .catch(() => { onProgress(url, false)})
-        // .then(() => {
-        //     console.log('END', url);
-        // })
+        .catch(() => onProgress(url, false))
         // then run next task
         .then(() => {
             onProgress(url, true)
-            runPreloadTask(prefetcher, imageCacheManager)
+            return runPreloadTask(prefetcher, imageCacheManager, onProgress)
         });
 }
 
