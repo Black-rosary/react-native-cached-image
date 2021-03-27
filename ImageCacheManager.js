@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const fsUtils = require('./utils/fsUtils');
 const pathUtils = require('./utils/pathUtils');
-const MemoryCache = require('react-native-clcasher/MemoryCache').default;
+const MemoryCache = require('./cache/MemoryCache').default;
 
 module.exports = (defaultOptions = {}, urlCache = MemoryCache, fs = fsUtils, path = pathUtils) => {
 
@@ -44,8 +44,10 @@ module.exports = (defaultOptions = {}, urlCache = MemoryCache, fs = fsUtils, pat
                 return fs.exists(cachedFilePath)
                     .then((exists) => {
                         if (exists) {
+                            //console.log('ImageCacheManager: cachedFilePath exist', cachedFilePath);
                             return cachedFilePath
                         } else {
+                            //console.log('ImageCacheManager: can not find file ', cachedFilePath);
                             throw new Error('file under URL stored in url cache doesn\'t exsts');
                         }
                     });

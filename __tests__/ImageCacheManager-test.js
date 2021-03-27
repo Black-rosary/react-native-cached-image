@@ -1,7 +1,7 @@
 'use strict';
 
 jest.mock('rn-fetch-blob', () => ({default: {fs: {}}}));
-jest.mock('react-native-clcasher/MemoryCache', () => ({default: {}}));
+jest.mock('../cache/MemoryCache', () => ({default: {}}));
 
 import ImageCacheManager from '../ImageCacheManager';
 import SimpleMemoryCache from './SimpleMemoryCache';

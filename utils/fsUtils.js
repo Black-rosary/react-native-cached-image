@@ -102,6 +102,7 @@ module.exports = {
                             return Promise.resolve(toFile);
                         }
                         let status = Math.floor(res.respInfo.status / 100);
+
                         if (status !== 2) {
                             // TODO - log / return error?
                             return Promise.reject();
