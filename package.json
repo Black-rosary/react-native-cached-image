@@ -43,7 +43,9 @@
     "ImageCacheManagerOptionsPropTypes.js",
     "ImageCachePreloader.js",
     "utils/fsUtils.js",
-    "utils/pathUtils.js"
+    "utils/pathUtils.js",
+    "cache/MemoryCache.js",
+    "cache/MemoryCache.test.js"
   ],
   "typings": "./index.d.ts",
   "dependencies": {
